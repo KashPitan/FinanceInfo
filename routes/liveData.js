@@ -10,14 +10,19 @@ const callScript = (req) => {
   //spawns the child process
   //first parameter is the programming language
   //the second parameter is the location of the script(and extras see docs)
-  var process = spawn("python", ["../scripts/script_test.py"]);
+  var process = spawn("python", ["./scripts/script_test.py"]);
+  var test = "";
 
   //takes the data printed from the file and runs the function below on it
   process.stdout.on("data", (data) => {
     //inside here is the function run on the data received from the python file
     // res.send(data.toString());
-    console.log(data);
+    console.log(data.toString());
+    test = data.toString();
   });
+  //   process.stdout.on("end", function () {
+  //     // console.log(test);
+  //   });
 };
 
 /*this sets up the api route and attaches it to the router object
@@ -25,8 +30,10 @@ first parameter is whatever is appended to the route from the server file
 */
 Router.get("/", function (req, res, next) {
   //inside here is the function run when the route is accessed
-  console.log("test123");
-  callScript(req);
+  //   console.log("test123");
+  //   console.log(callScript());
+  //   console.log("live");
+  callScript();
 });
 
 //exports the routes
