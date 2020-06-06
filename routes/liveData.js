@@ -22,12 +22,12 @@ Router.get("/", async (req, res, next) => {
     console.log(data.toString());
 
     test = data.toString();
-    console.log("test is equal to" + test);
+    console.log("Python output: " + test);
   });
 
   process.stdout.on("end", () => {
-    console.log("and now it is " + test);
-    res.send("hello world" + test);
+    console.log("Python output at end: " + test);
+    res.send(test);
   });
 });
 
