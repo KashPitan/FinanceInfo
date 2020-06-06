@@ -10,7 +10,7 @@ const callScript = (req) => {
   //spawns the child process
   //first parameter is the programming language
   //the second parameter is the location of the script(and extras see docs)
-  var process = spawn("python", ["./scripts/script_test.py"]);
+  var process = spawn("python", ["./scripts/get_stock_data.py"]);
   var test = "";
 
   //takes the data printed from the file and runs the function below on it
