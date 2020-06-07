@@ -19,7 +19,7 @@ Router.get("/", async (req, res, next) => {
   //spawns the child process
   //first parameter is the programming language
   //the second parameter is the location of the script(and extras see docs)
-  var process = spawn(python_path, ["./scripts/get_stock_data.py"]);
+  var process = spawn("python", ["./scripts/get_stock_data.py"]);
   //   var process = spawn(python_path, ["./scripts/script_test.py"]);
   var test = "";
 
