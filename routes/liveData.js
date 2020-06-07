@@ -3,6 +3,13 @@ const Express = require("express");
 //imports the express router object to set up routes for api calls
 const Router = Express.Router();
 
+const dotenv = require("dotenv");
+dotenv.config();
+
+const python_path = process.env.PYTHON_PATH;
+
+console.log(python_path);
+
 /*this sets up the api route and attaches it to the router object
 first parameter is whatever is appended to the route from the server file
 */
@@ -12,7 +19,8 @@ Router.get("/", async (req, res, next) => {
   //spawns the child process
   //first parameter is the programming language
   //the second parameter is the location of the script(and extras see docs)
-  var process = spawn("python", ["./scripts/get_stock_data.py"]);
+  var process = spawn(python_path, ["./scripts/get_stock_data.py"]);
+  //   var process = spawn(python_path, ["./scripts/script_test.py"]);
   var test = "";
 
   //takes the data printed from the file and runs the function below on it

@@ -1,83 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 import Navbar from "./layout/navbar";
-// import Button from "./layout/button";
 import axios from "axios";
 import "materialize-css/dist/css/materialize.min.css";
 
-var update = false;
-
-class Button extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: false,
-            desc: 'Not updating prices',
-        };
-    }
-
-    handleClick(){
-      
-      console.log("Before: ", this.state.value)
-      this.setState({value: !this.state.value});
-      console.log("After: ", this.state.value)
-
-        if (this.state.value){
-            this.setState({desc: 'Updating prices'});
-        } else {
-            this.setState({desc: 'Not updating prices'});
-        }
-
-        update = !update
-        // console.log("TEST", update);
-
-    }
-
-    render() {
-        return (
-            <button
-            id="updatebutton"
-            type="button"
-            onClick = {() => this.handleClick()}
-            >{this.state.desc}
-            </button>
-        );
-    };
-}
-
-
-
 const App = () => {
   const [apiResTest, setApiResTest] = useState("");
+  const isUpdating2 = useRef(false);
+  const [buttonText, setButtonText] = useState("Get Live Prices");
+  var interval;
 
-  const apiTest = () => {
-    axios.get("/live").then((res) => {
-      // console.log("This is res: ", res);
+  const apiTest = async () => {
+    console.log("calling api");
+    await axios.get("/live").then((res) => {
       setApiResTest(res.data);
     });
   };
 
-  
-  useEffect(() => {
-        
-    const intervalId = setInterval(function(){
-      if (update) {
-        apiTest();
-      }
-    }, 2000);
-    
-    return () => clearInterval(intervalId);
+  const toggleUpdating = () => {
+    isUpdating2.current = !isUpdating2.current;
+    console.log(isUpdating2.current);
+    setButtonText(
+      isUpdating2.current ? "Stop Live Price Update" : "Get Live Prices"
+    );
+    if (!isUpdating2.current) clearInterval(interval);
+  };
 
-  }, []);
+  useEffect(() => {
+    if (isUpdating2.current) {
+      interval = setInterval(() => {
+        apiTest();
+      }, 2000);
+    }
+  }, [isUpdating2.current]);
 
   return (
     <>
       <Navbar />
       <h1>HEADER + {apiResTest}</h1>
-      <Button />
+      <button type="button" onClick={toggleUpdating}>
+        {buttonText}
+      </button>
     </>
   );
-
 };
 
 export default App;
