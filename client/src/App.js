@@ -8,13 +8,16 @@ const App = () => {
   const [apiResTest, setApiResTest] = useState("");
   const isUpdating2 = useRef(false);
   const [buttonText, setButtonText] = useState("Get Live Prices");
-  var interval;
 
-  const apiTest = async () => {
-    console.log("calling api");
-    await axios.get("/live").then((res) => {
+  const pollApi = async () => {
+    if (!isUpdating2.current) return;
+    const res = await axios.get("/live").then((res) => {
+      console.log("api polling");
       setApiResTest(res.data);
     });
+    setTimeout(async () => {
+      await pollApi();
+    }, 2000);
   };
 
   const toggleUpdating = () => {
@@ -23,15 +26,10 @@ const App = () => {
     setButtonText(
       isUpdating2.current ? "Stop Live Price Update" : "Get Live Prices"
     );
-    if (!isUpdating2.current) clearInterval(interval);
   };
 
   useEffect(() => {
-    if (isUpdating2.current) {
-      interval = setInterval(() => {
-        apiTest();
-      }, 2000);
-    }
+    pollApi();
   }, [isUpdating2.current]);
 
   return (
