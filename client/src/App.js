@@ -7,7 +7,9 @@ import "materialize-css/dist/css/materialize.min.css";
 const App = () => {
   const [apiResTest, setApiResTest] = useState("");
   const isUpdating2 = useRef(false);
-  const [buttonText, setButtonText] = useState("Get Live Prices");
+  const [buttonText, setButtonText] = useState("Get Live Prices"); 
+  const tickerInput = document.getElementById("tickerInput"); // Can't do this because doesn't exist yet?
+
 
   const pollApi = async () => {
     if (!isUpdating2.current) return;
@@ -28,6 +30,13 @@ const App = () => {
     );
   };
 
+  const submitTicker = () => {
+    const ticker = document.getElementById("tickerInput").value
+    console.log(ticker);
+    document.getElementById("currentTicker").innerHTML = "Current ticker: " + ticker;
+    document.getElementById("tickerInput").value = "";
+  };
+
   useEffect(() => {
     pollApi();
   }, [isUpdating2.current]);
@@ -36,9 +45,14 @@ const App = () => {
     <>
       <Navbar />
       <h1>HEADER + {apiResTest}</h1>
-      <button type="button" onClick={toggleUpdating}>
+      <button id="togglePrices" type="button" onClick={toggleUpdating}>
         {buttonText}
       </button>
+      <p id="currentTicker">Current ticker: None</p>
+      <div>
+        <input id="tickerInput" placeholder="Ticker" type="text" maxLength="10"></input>
+        <button id="submitButton" type="button" onClick={submitTicker} >Submit</button>
+      </div>
     </>
   );
 };
