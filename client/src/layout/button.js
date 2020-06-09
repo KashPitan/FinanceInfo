@@ -17,10 +17,6 @@ class Button extends React.Component {
         } else {
             this.setState({desc: 'Updating prices'});
         }
-
-        const x = 5;
-        console.log(x);
-
     }
 
     render() {
