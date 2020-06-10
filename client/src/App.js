@@ -8,12 +8,16 @@ const App = () => {
   const [apiResTest, setApiResTest] = useState("");
   const isUpdating2 = useRef(false);
   const [buttonText, setButtonText] = useState("Get Live Prices"); 
-  const tickerInput = document.getElementById("tickerInput"); // Can't do this because doesn't exist yet?
-
+  // const tickerInput = document.getElementById("tickerInput"); // Can't do this because doesn't exist yet?
+  const ticker = useRef(null);
 
   const pollApi = async () => {
     if (!isUpdating2.current) return;
-    const res = await axios.get("/live").then((res) => {
+    const res = await axios.get("/live", {
+      params: {
+        ticker: ticker
+      }
+      }).then((res) => {
       console.log("api polling");
       setApiResTest(res.data);
     });
@@ -31,9 +35,9 @@ const App = () => {
   };
 
   const submitTicker = () => {
-    const ticker = document.getElementById("tickerInput").value
+    ticker.current = document.getElementById("tickerInput").value
     console.log(ticker);
-    document.getElementById("currentTicker").innerHTML = "Current ticker: " + ticker;
+    document.getElementById("currentTicker").innerHTML = "Current ticker: " + ticker.current;
     document.getElementById("tickerInput").value = "";
   };
 
@@ -50,7 +54,7 @@ const App = () => {
       </button>
       <p id="currentTicker">Current ticker: None</p>
       <div>
-        <input id="tickerInput" placeholder="Ticker" type="text" maxLength="10"></input>
+        <input id="tickerInput" placeholder="Ticker" type="text" maxLength="10" minLength="1"></input>
         <button id="submitButton" type="button" onClick={submitTicker} >Submit</button>
       </div>
     </>

@@ -3,13 +3,19 @@ import datetime
 import sys 
 import json
 
-# x = json.loads(sys.argv[1])
+x = json.loads(sys.argv[1])
+ticker = x["current"]
 
+# ticker = 'TSLA' 
 
-ticker = 'TSLA' 
-print("Stock price: ", info.get_live_price(ticker))
-print("Current time: ", datetime.datetime.now().time())
-# print("TEST " + x)
-print(sys.argv[1])
+if ticker != "None" and ticker != "":
+    print("Stock price for ", ticker, ": ", info.get_live_price(ticker))
+    print("Current time: ", datetime.datetime.now().time())
+else:
+    print("Please enter ticker")
+
+# print(sys.argv[1])
 # print(type(sys.argv[1]))
-# print(x["req"])
+
+# print(x)
+# print(x["current"])
