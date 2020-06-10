@@ -36,7 +36,7 @@ const App = () => {
 
   const submitTicker = () => {
     ticker.current = document.getElementById("tickerInput").value
-    console.log(ticker);
+    console.log(ticker.current);
     document.getElementById("currentTicker").innerHTML = "Current ticker: " + ticker.current;
     document.getElementById("tickerInput").value = "";
   };

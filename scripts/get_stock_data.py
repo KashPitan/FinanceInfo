@@ -3,19 +3,25 @@ import datetime
 import sys 
 import json
 
+# ticker = 'TSLA'
+
 x = json.loads(sys.argv[1])
 ticker = x["current"]
 
-# ticker = 'TSLA' 
-
-if ticker != "None" and ticker != "":
-    print("Stock price for ", ticker, ": ", info.get_live_price(ticker))
-    print("Current time: ", datetime.datetime.now().time())
+if ticker is not None:
+    ticker_passed = True
 else:
-    print("Please enter ticker")
+    ticker_passed = False
 
-# print(sys.argv[1])
-# print(type(sys.argv[1]))
-
-# print(x)
-# print(x["current"])
+if ticker_passed:
+    if ticker != "":
+        try:
+            price = info.get_live_price(ticker)
+            print("Stock price for ", ticker, ": ", price)
+            print("Current time: ", datetime.datetime.now().time())
+        except AssertionError:
+            print("Cannot find stock price for ", ticker)
+    else:
+        print("No ticker entered")
+else:
+    print("Please submit ticker")
