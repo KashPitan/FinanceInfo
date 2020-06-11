@@ -42,7 +42,7 @@ const App = () => {
 
   const submitTicker = () => {
     ticker.current = document.getElementById("tickerInput").value;
-    if (ticker.current === null || "") {
+    if (ticker.current === null || "" || " ") {
       M.toast({ html: "Please enter a ticker before submitting" });
       return;
     }
