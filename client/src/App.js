@@ -22,7 +22,6 @@ const App = () => {
       
       // const msg = `Stock price for ${res.data.ticker}: ${res.data.value}. Current time: ${res.data.time}`
       // setApiResTest(msg);
-      
       setApiResTest(res.data);
 
     });
@@ -56,9 +55,16 @@ const App = () => {
       <h1>HEADER</h1>
       {/* <h1>HEADER {apiResTest}</h1> */}
       <p id="currentTicker">Current ticker: None</p>
-      <p id="stockText">Stock price: {apiResTest.value}</p>
-      <p id="timeText">Current time: {apiResTest.time}</p>
-      <p id="warning">Warning: {apiResTest.msg}</p>
+      <p id="stockText" style={{display: apiResTest.success ? 'block' : 'none'}}>Stock price: {apiResTest.value}</p>
+      <p id="timeText" style={{display: apiResTest.success ? 'block' : 'none'}}>Current time: {apiResTest.time}</p>
+      
+      <p 
+      id="warningText" 
+      style={{display: (apiResTest.success || typeof apiResTest.success == 'undefined') ? 'none' : 'block'}}
+      >
+        Warning: {apiResTest.msg}
+      </p>
+      
       <button id="togglePrices" type="button" onClick={toggleUpdating}>
         {buttonText}
       </button>
