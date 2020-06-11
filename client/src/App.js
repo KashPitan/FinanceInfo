@@ -19,7 +19,14 @@ const App = () => {
       }
       }).then((res) => {
       console.log("api polling");
-      setApiResTest(res.data);
+      
+      if (res.data.success === true){
+        setApiResTest(res.data.value);
+        // setApiResTest(res.data.time);
+      } else {
+        setApiResTest(res.data.msg)
+      }
+
     });
     setTimeout(async () => {
       await pollApi();
