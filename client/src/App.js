@@ -20,15 +20,10 @@ const App = () => {
       }).then((res) => {
       console.log("api polling");
       
-      if (res.data.success === true){
-        const msg = "Stock price for " + res.data.ticker + ": " + res.data.value + "Current time: " + res.data.time 
-        setApiResTest(msg);
-        // setApiResTest(res.data);
-        // setApiResTest(res.data.value);
-        // setApiResTest(res.data.time);
-      } else {
-        setApiResTest(res.data.msg)
-      }
+      // const msg = `Stock price for ${res.data.ticker}: ${res.data.value}. Current time: ${res.data.time}`
+      // setApiResTest(msg);
+      
+      setApiResTest(res.data);
 
     });
     setTimeout(async () => {
@@ -58,11 +53,15 @@ const App = () => {
   return (
     <>
       <Navbar />
-      <h1>HEADER + {apiResTest}</h1>
+      <h1>HEADER</h1>
+      {/* <h1>HEADER {apiResTest}</h1> */}
+      <p id="currentTicker">Current ticker: None</p>
+      <p id="stockText">Stock price: {apiResTest.value}</p>
+      <p id="timeText">Current time: {apiResTest.time}</p>
+      <p id="warning">Warning: {apiResTest.msg}</p>
       <button id="togglePrices" type="button" onClick={toggleUpdating}>
         {buttonText}
       </button>
-      <p id="currentTicker">Current ticker: None</p>
       <div>
         <input id="tickerInput" placeholder="Ticker" type="text" maxLength="10" minLength="1"></input>
         <button id="submitButton" type="button" onClick={submitTicker} >Submit</button>

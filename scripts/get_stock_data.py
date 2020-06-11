@@ -20,7 +20,7 @@ if ticker_passed:
         try:
             price = info.get_live_price(res['ticker'])            
             res['value'] = price
-            res['time'] = datetime.datetime.now().strftime("%d %b %Y, %H:%M:%S")
+            res['time'] = datetime.datetime.now().strftime("%H:%M:%S, %d-%b-%Y")
             res['success'] = True
         except AssertionError:
             res['success'] = False
