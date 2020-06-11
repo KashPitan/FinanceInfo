@@ -21,7 +21,10 @@ const App = () => {
       console.log("api polling");
       
       if (res.data.success === true){
-        setApiResTest(res.data.value);
+        const msg = "Stock price for " + res.data.ticker + ": " + res.data.value + "Current time: " + res.data.time 
+        setApiResTest(msg);
+        // setApiResTest(res.data);
+        // setApiResTest(res.data.value);
         // setApiResTest(res.data.time);
       } else {
         setApiResTest(res.data.msg)
