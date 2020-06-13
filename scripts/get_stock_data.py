@@ -24,7 +24,7 @@ if ticker_passed:
             res['success'] = True
         except AssertionError:
             res['success'] = False
-            res['msg'] = "Cannot find stock price for " + res['ticker']
+            res['msg'] = f"Cannot find stock price for '{res['ticker']}'"
     else:
         res['success'] = False
         res['msg'] = "No ticker entered"

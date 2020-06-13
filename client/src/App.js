@@ -33,24 +33,29 @@ const App = () => {
   };
 
   const toggleUpdating = () => {
-    isUpdating2.current = !isUpdating2.current;
-    console.log(isUpdating2.current);
-    setButtonText(
-      isUpdating2.current ? "Stop Live Price Update" : "Get Live Prices"
-    );
+    if (ticker.current == null) {
+      M.toast({ html: "Please enter a ticker before submitting" });  
+    } else {
+      isUpdating2.current = !isUpdating2.current;
+      setButtonText(
+        isUpdating2.current ? "Stop Live Price Update" : "Get Live Prices"
+      );
+    }
   };
 
   const submitTicker = () => {
-    ticker.current = document.getElementById("tickerInput").value;
-    if (ticker.current === null || "" || " ") {
-      M.toast({ html: "Please enter a ticker before submitting" });
-      return;
-    }
 
-    console.log(ticker.current);
-    document.getElementById("currentTicker").innerHTML =
+    const tickerInput = document.getElementById("tickerInput").value;
+    
+    if (tickerInput === null || tickerInput === "" || tickerInput ===" ") {
+      M.toast({ html: "No ticker entered" });
+    } else {
+      ticker.current = tickerInput;
+      document.getElementById("currentTicker").innerHTML =
       "Current ticker: " + ticker.current;
-    document.getElementById("tickerInput").value = "";
+      document.getElementById("tickerInput").value = "";
+      console.log(ticker.current);
+    }
   };
 
   useEffect(() => {
@@ -69,6 +74,7 @@ const App = () => {
       >
         Stock price: {apiResTest.value}
       </p>
+
       <p
         id="timeText"
         style={{ display: apiResTest.success ? "block" : "none" }}
