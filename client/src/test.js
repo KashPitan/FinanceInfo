@@ -43,9 +43,9 @@ const App = () => {
     }
   };
 
-  const submitTicker = (event) => {
+  const submitTickerManual = (event) => {
 
-    const tickerInput = document.getElementById("tickerInput").value;
+    const tickerInput = document.getElementById("tickerInputManual").value;
     
     if (tickerInput === null || tickerInput === "" || tickerInput ===" ") {
       M.toast({ html: "No ticker entered" });
@@ -58,6 +58,21 @@ const App = () => {
     }
     event.preventDefault();
   };
+
+  // const submitTickerList = (event) => {
+
+  //   const tickerInput = document.getElementById("tickerInputList").value;
+    
+  //   if (tickerInput === null || tickerInput === "" || tickerInput ===" ") {
+  //     M.toast({ html: "No ticker entered" });
+  //   } else {
+  //     ticker.current = tickerInput;
+  //     document.getElementById("currentTicker").innerHTML =
+  //     "Current ticker: " + ticker.current;
+  //     console.log(ticker.current);
+  //   }
+  //   // event.preventDefault();
+  // };
 
   useEffect(() => {
     pollApi();
@@ -99,10 +114,10 @@ const App = () => {
         {buttonText}
       </button>
 
-      <form onSubmit={submitTicker}>
+      <form onSubmit={submitTickerManual}>
           <label>
             <input
-              id="tickerInput"
+              id="tickerInputManual"
               placeholder="Ticker"
               type="text"
               maxLength="10"
@@ -111,6 +126,19 @@ const App = () => {
           </label>
           <input type="submit" value="Submit" />
         </form>
+
+      {/* <form onSubmit={submitTickerList}>
+        <label>
+          Select ticker:
+        </label>
+        <select name="ticker" id="tickerInputList">
+          <option value="TSLA">TSLA</option>
+          <option value="AAPL">AAPL</option>
+          <option value="GOOGL">GOOGL</option>
+          <option value="AMZN">AMZN</option>
+        </select>
+        <input type="submit" value="Submit" />
+      </form> */}
 
     </>
   );
