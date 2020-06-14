@@ -43,9 +43,9 @@ const App = () => {
     }
   };
 
-  const submitTicker = (event) => {
+  const submitTickerManual = (event) => {
 
-    const tickerInput = document.getElementById("tickerInput").value;
+    const tickerInput = document.getElementById("tickerInputManual").value;
     
     if (tickerInput === null || tickerInput === "" || tickerInput ===" ") {
       M.toast({ html: "No ticker entered" });
@@ -53,10 +53,21 @@ const App = () => {
       ticker.current = tickerInput;
       document.getElementById("currentTicker").innerHTML =
       "Current ticker: " + ticker.current;
-      document.getElementById("tickerInput").value = "";
+      document.getElementById("tickerInputManual").value = "";
       console.log(ticker.current);
     }
     event.preventDefault();
+  };
+
+  const submitTickerList = (event) => {
+
+    const tickerInput = document.getElementById("tickerInputList").value;
+    ticker.current = tickerInput;
+    document.getElementById("currentTicker").innerHTML =
+    "Current ticker: " + ticker.current;
+    console.log(ticker.current);
+    event.preventDefault();
+
   };
 
   useEffect(() => {
@@ -95,22 +106,42 @@ const App = () => {
         Warning: {apiResTest.msg}
       </p>
 
+      <br></br>
+      
       <button id="togglePrices" type="button" onClick={toggleUpdating}>
         {buttonText}
       </button>
 
-      <form onSubmit={submitTicker}>
-          <label>
-            <input
-              id="tickerInput"
-              placeholder="Ticker"
-              type="text"
-              maxLength="10"
-              minLength="1"
-            ></input>
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
+      <br></br>
+      <br></br>
+
+      <form onSubmit={submitTickerManual}>
+        <label>
+          <input
+            id="tickerInputManual"
+            placeholder="Ticker"
+            type="text"
+            maxLength="10"
+            minLength="1"
+          ></input>
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+
+      <br></br>
+
+      <form onSubmit={submitTickerList}>
+        <label>
+          Select ticker
+          <select id="tickerInputList" value="TEST">
+            <option value="TSLA">TSLA</option>
+            <option value="AAPL">AAPL</option>
+            <option value="GOOGL">GOOGL</option>
+            <option value="AMZN">AMZN</option>
+          </select>
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
 
     </>
   );
