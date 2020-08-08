@@ -11,6 +11,11 @@ const App = () => {
   const [buttonText, setButtonText] = useState("Get Live Prices");
   // const tickerInput = document.getElementById("tickerInput"); // Can't do this because doesn't exist yet?
   const ticker = useRef(null);
+  const [tickerInput, setTickerInput] = useState("");
+
+  const tickerOnChange = (e) => {
+    setTickerInput(e.target.value);
+  };
 
   const pollApi = async () => {
     if (!isUpdating2.current) return;
@@ -34,7 +39,7 @@ const App = () => {
 
   const toggleUpdating = () => {
     if (ticker.current == null) {
-      M.toast({ html: "Please enter a ticker before submitting" });  
+      M.toast({ html: "Please enter a ticker before submitting" });
     } else {
       isUpdating2.current = !isUpdating2.current;
       setButtonText(
@@ -44,15 +49,14 @@ const App = () => {
   };
 
   const submitTickerManual = (event) => {
-
     const tickerInput = document.getElementById("tickerInputManual").value;
-    
-    if (tickerInput === null || tickerInput === "" || tickerInput ===" ") {
+
+    if (tickerInput === null || tickerInput === "" || tickerInput === " ") {
       M.toast({ html: "No ticker entered" });
     } else {
       ticker.current = tickerInput;
       document.getElementById("currentTicker").innerHTML =
-      "Current ticker: " + ticker.current;
+        "Current ticker: " + ticker.current;
       document.getElementById("tickerInputManual").value = "";
       console.log(ticker.current);
     }
@@ -60,14 +64,13 @@ const App = () => {
   };
 
   const submitTickerList = (event) => {
-
-    const tickerInput = document.getElementById("tickerInputList").value;
-    ticker.current = tickerInput;
-    document.getElementById("currentTicker").innerHTML =
-    "Current ticker: " + ticker.current;
-    console.log(ticker.current);
+    // const tickerInput = document.getElementById("tickerInputList").value;
+    // ticker.current = tickerInput;
+    // document.getElementById("currentTicker").innerHTML =
+    //   "Current ticker: " + ticker.current;
+    // console.log(ticker.current);
     event.preventDefault();
-
+    console.log(tickerInput);
   };
 
   useEffect(() => {
@@ -107,7 +110,7 @@ const App = () => {
       </p>
 
       <br></br>
-      
+
       <button id="togglePrices" type="button" onClick={toggleUpdating}>
         {buttonText}
       </button>
@@ -129,20 +132,25 @@ const App = () => {
       </form>
 
       <br></br>
-
       <form onSubmit={submitTickerList}>
-        <label>
-          Select ticker
-          <select id="tickerInputList" value="TEST">
-            <option value="TSLA">TSLA</option>
-            <option value="AAPL">AAPL</option>
-            <option value="GOOGL">GOOGL</option>
-            <option value="AMZN">AMZN</option>
-          </select>
-        </label>
+        <input
+          type="text"
+          list="tickers"
+          name="ticketInputList"
+          id="tickerInputList"
+          value={tickerInput}
+          className="browser-default"
+          onChange={tickerOnChange}
+        />
+        <datalist id="tickers">
+          <option value="TSLA">TSLA</option>
+          <option value="AAPL">AAPL</option>
+          <option value="GOOGL">GOOGL</option>
+          <option value="AMZN">AMZN</option>
+        </datalist>
+        <br></br>
         <input type="submit" value="Submit" />
       </form>
-
     </>
   );
 };
