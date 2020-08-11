@@ -64,11 +64,11 @@ const App = () => {
   };
 
   const submitTickerList = (event) => {
-    // const tickerInput = document.getElementById("tickerInputList").value;
-    // ticker.current = tickerInput;
-    // document.getElementById("currentTicker").innerHTML =
-    //   "Current ticker: " + ticker.current;
-    // console.log(ticker.current);
+    const tickerInput = document.getElementById("tickerInputList").value;
+    ticker.current = tickerInput;
+    document.getElementById("currentTicker").innerHTML =
+      "Current ticker: " + ticker.current;
+    console.log(ticker.current);
     event.preventDefault();
     console.log(tickerInput);
   };
@@ -132,6 +132,8 @@ const App = () => {
       </form>
 
       <br></br>
+      <br></br>
+      
       <form onSubmit={submitTickerList}>
         <input
           type="text"
@@ -149,8 +151,28 @@ const App = () => {
           <option value="AMZN">AMZN</option>
         </datalist>
         <br></br>
+        <br></br>
         <input type="submit" value="Submit" />
       </form>
+      
+      <br></br>
+      <br></br>
+
+      <form onSubmit={submitTickerList}>
+        <label>
+          Select ticker
+          {/* <select class="browser-default" id="tickerInputList" value="TEST"> */}
+          <select style={{ display: "block" }} id="tickerInputList" value={tickerInput} onChange={tickerOnChange}>
+            <option value="TSLA">TSLA</option>
+            <option value="AAPL">AAPL</option>
+            <option value="GOOGL">GOOGL</option>
+            <option value="AMZN">AMZN</option>
+          </select>
+        </label>
+        <br></br>
+        <input type="submit" value="Submit" />
+      </form>
+
     </>
   );
 };
