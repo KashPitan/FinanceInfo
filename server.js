@@ -27,7 +27,7 @@ App.use("/live", liveDataRoutes);
  * sets the port for the server to the port in the .env file
  * or 4000
  */
-App.listen(process.env.PORT || 4000, function () {
+App.listen(process.env.PORT || 4000, () => {
   if (process.env.PORT) {
     console.log("listening on port " + process.env.PORT);
   } else {

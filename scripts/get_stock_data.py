@@ -8,7 +8,7 @@ import json
 res = {'ticker': None, 'value': None, 'time': None, 'success': None, 'msg': None}
 
 x = json.loads(sys.argv[1])
-res['ticker'] = x["current"]
+res['ticker'] = x["ticker"]
 
 if res['ticker'] is not None:
     ticker_passed = True

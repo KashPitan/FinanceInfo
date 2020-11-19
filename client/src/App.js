@@ -4,118 +4,127 @@ import Navbar from "./layout/navbar";
 import axios from "axios";
 import "materialize-css/dist/css/materialize.min.css";
 import M from "materialize-css/dist/js/materialize.min.js";
+// import TickerInputForm from "./Components/TickerInputForm";
 
 const App = () => {
-  const [apiResTest, setApiResTest] = useState("");
-  const isUpdating2 = useRef(false);
-  const [buttonText, setButtonText] = useState("Get Live Prices");
-  // const tickerInput = document.getElementById("tickerInput"); // Can't do this because doesn't exist yet?
-  const ticker = useRef(null);
-  const [tickerInput, setTickerInput] = useState("");
+  const [livePrice, setLivePrice] = useState("");
+  const [liveTicker, setLiveTicker] = useState("");
 
-  const tickerOnChange = (e) => {
-    setTickerInput(e.target.value);
-  };
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [buttonText, setButtonText] = useState("");
+  const [ticker, setTicker] = useState("");
 
-  const pollApi = async () => {
-    if (!isUpdating2.current) return;
-    const res = await axios
-      .get("/live", {
-        params: {
-          ticker: ticker,
-        },
-      })
-      .then((res) => {
-        console.log("api polling");
-
-        // const msg = `Stock price for ${res.data.ticker}: ${res.data.value}. Current time: ${res.data.time}`
-        // setApiResTest(msg);
-        setApiResTest(res.data);
-      });
+  let timer = () =>
     setTimeout(async () => {
       await pollApi();
     }, 2000);
-  };
 
-  const toggleUpdating = () => {
-    if (ticker.current == null) {
-      M.toast({ html: "Please enter a ticker before submitting" });
-    } else {
-      isUpdating2.current = !isUpdating2.current;
-      setButtonText(
-        isUpdating2.current ? "Stop Live Price Update" : "Get Live Prices"
-      );
+  const stopTimer = () => {
+    console.log("test");
+    if (timer) {
+      console.log("clearing");
+      clearTimeout(timer);
     }
   };
 
-  const submitTickerManual = (event) => {
-    const tickerInput = document.getElementById("tickerInputManual").value;
-
-    if (tickerInput === null || tickerInput === "" || tickerInput === " ") {
-      M.toast({ html: "No ticker entered" });
-    } else {
-      ticker.current = tickerInput;
-      document.getElementById("currentTicker").innerHTML =
-        "Current ticker: " + ticker.current;
-      document.getElementById("tickerInputManual").value = "";
-      console.log(ticker.current);
-    }
-    event.preventDefault();
-  };
-
-  const submitTickerList = (event) => {
-    const tickerInput = document.getElementById("tickerInputList").value;
-    ticker.current = tickerInput;
-    document.getElementById("currentTicker").innerHTML =
-      "Current ticker: " + ticker.current;
-    console.log(ticker.current);
-    event.preventDefault();
-    console.log(tickerInput);
+  const tickerOnChange = (e) => {
+    // console.log(e.target.value);
+    setTicker(e.target.value);
   };
 
   useEffect(() => {
-    pollApi();
-  }, [isUpdating2.current]);
+    // console.log(isUpdating);
+    setButtonText(isUpdating ? "Stop Live Price Update" : "Get Live Prices");
+    clearTimeout(timer);
+    console.log(isUpdating);
+    if (isUpdating === true) {
+      timer();
+    } else if (isUpdating === false) {
+      stopTimer();
+    }
+    // if (isUpdating) pollApi();
+  }, [isUpdating]);
+
+  const pollApi = async () => {
+    try {
+      const res = await axios.get("/live", {
+        params: {
+          ticker: liveTicker,
+        },
+      });
+      console.log(res);
+      if (res.status !== 200 || res.data.value === null) {
+        console.log("bad response");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await pollApi();
+      } else {
+        setLivePrice(res.data);
+        // timer();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const toggleUpdating = () => {
+    setIsUpdating(!isUpdating);
+    if (ticker === null) {
+      M.toast({ html: "Please enter a ticker before submitting" });
+    }
+  };
+
+  const submitTickerManual = (e) => {
+    e.preventDefault();
+    if (ticker === null || ticker === "" || ticker === " ") {
+      M.toast({ html: "No ticker entered" });
+    } else {
+      setLiveTicker(ticker);
+      setIsUpdating(!isUpdating);
+    }
+  };
+
+  const submitTickerList = (e) => {
+    e.preventDefault();
+    setTicker(e.target.value);
+    console.log(e.target.value);
+  };
 
   return (
     <>
       <Navbar />
-      <h1>HEADER</h1>
-      {/* <h1>HEADER {apiResTest}</h1> */}
-      <p id="currentTicker">Current ticker: None</p>
+      <h5 id="currentTicker">Current ticker: {liveTicker}</h5>
       <p
         id="stockText"
-        style={{ display: apiResTest.success ? "block" : "none" }}
+        style={{ display: livePrice.success ? "block" : "none" }}
       >
-        Stock price: {apiResTest.value}
+        Stock price: {livePrice.value}
       </p>
 
       <p
         id="timeText"
-        style={{ display: apiResTest.success ? "block" : "none" }}
+        style={{ display: livePrice.success ? "block" : "none" }}
       >
-        Current time: {apiResTest.time}
+        Current time: {livePrice.time}
       </p>
 
       <p
         id="warningText"
         style={{
           display:
-            apiResTest.success || typeof apiResTest.success == "undefined"
+            livePrice.success || typeof livePrice.success == "undefined"
               ? "none"
               : "block",
         }}
       >
-        Warning: {apiResTest.msg}
+        Warning: {livePrice.msg}
       </p>
 
-      <br></br>
+      {liveTicker && (
+        <button id="togglePrices" type="button" onClick={toggleUpdating}>
+          {buttonText}
+        </button>
+      )}
 
-      <button id="togglePrices" type="button" onClick={toggleUpdating}>
-        {buttonText}
-      </button>
-
-      <br></br>
       <br></br>
 
       <form onSubmit={submitTickerManual}>
@@ -126,43 +135,23 @@ const App = () => {
             type="text"
             maxLength="10"
             minLength="1"
+            onChange={tickerOnChange}
           ></input>
         </label>
         <input type="submit" value="Submit" />
       </form>
 
       <br></br>
-      <br></br>
-      
-      <form onSubmit={submitTickerList}>
-        <input
-          type="text"
-          list="tickers"
-          name="ticketInputList"
-          id="tickerInputList"
-          value={tickerInput}
-          className="browser-default"
-          onChange={tickerOnChange}
-        />
-        <datalist id="tickers">
-          <option value="TSLA">TSLA</option>
-          <option value="AAPL">AAPL</option>
-          <option value="GOOGL">GOOGL</option>
-          <option value="AMZN">AMZN</option>
-        </datalist>
-        <br></br>
-        <br></br>
-        <input type="submit" value="Submit" />
-      </form>
-      
-      <br></br>
-      <br></br>
 
-      <form onSubmit={submitTickerList}>
+      {/* <form onSubmit={submitTickerList}>
         <label>
           Select ticker
-          {/* <select class="browser-default" id="tickerInputList" value="TEST"> */}
-          <select style={{ display: "block" }} id="tickerInputList" value={tickerInput} onChange={tickerOnChange}>
+          <select
+            style={{ display: "block" }}
+            id="tickerInputList"
+            value={tickerInput}
+            onChange={tickerOnChange}
+          >
             <option value="TSLA">TSLA</option>
             <option value="AAPL">AAPL</option>
             <option value="GOOGL">GOOGL</option>
@@ -171,8 +160,7 @@ const App = () => {
         </label>
         <br></br>
         <input type="submit" value="Submit" />
-      </form>
-
+      </form> */}
     </>
   );
 };
