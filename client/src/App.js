@@ -40,8 +40,11 @@ const App = () => {
   }, [isUpdating]);
 
   const pollApi = async () => {
-    console.log(liveTicker);
-    console.log(liveTicker2.current);
+    
+    const init_ticker = liveTicker2.current;
+    
+    // console.log("init ", liveTicker);
+    console.log("init ", liveTicker2.current);
     try {
       const res = await axios.get("/live", {
         params: {
@@ -53,7 +56,9 @@ const App = () => {
         console.log("bad response");
         await new Promise((resolve) => setTimeout(resolve, 1000));
         await pollApi();
-      } else {
+      } else if (liveTicker2.current === init_ticker) {
+        console.log("end ", liveTicker);
+        console.log("end ", liveTicker2.current);
         setLivePrice(res.data);
         // timer();
       }
@@ -75,6 +80,13 @@ const App = () => {
     if (ticker === null || ticker === "" || ticker === " ") {
       M.toast({ html: "No ticker entered" });
     } else {
+      
+      if (liveTicker2.current != null) {
+        const initPrice = livePrice;
+        initPrice.value = "Retrieving...";
+        setLivePrice(initPrice);
+      }
+      
       setLiveTicker(ticker);
       liveTicker2.current = ticker;
     }
