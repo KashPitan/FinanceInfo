@@ -9,50 +9,46 @@ import M from "materialize-css/dist/js/materialize.min.js";
 const App = () => {
   const [livePrice, setLivePrice] = useState("");
   const [liveTicker, setLiveTicker] = useState("");
+  const liveTicker2 = useRef(null);
 
   const [isUpdating, setIsUpdating] = useState(false);
+  const isUpdating2 = useRef(false)
   const [buttonText, setButtonText] = useState("");
   const [ticker, setTicker] = useState("");
-
-  let timer = () =>
-    setTimeout(async () => {
-      await pollApi();
-    }, 2000);
-
-  const stopTimer = () => {
-    console.log("test");
-    if (timer) {
-      console.log("clearing");
-      clearTimeout(timer);
-    }
-  };
-
-  const tickerOnChange = (e) => {
-    // console.log(e.target.value);
-    setTicker(e.target.value);
-  };
 
   useEffect(() => {
     // console.log(isUpdating);
     setButtonText(isUpdating ? "Stop Live Price Update" : "Get Live Prices");
-    clearTimeout(timer);
-    console.log(isUpdating);
-    if (isUpdating === true) {
-      timer();
-    } else if (isUpdating === false) {
-      stopTimer();
-    }
-    // if (isUpdating) pollApi();
+    console.log("isUpdating (useEff useState)? ", isUpdating);
+    console.log("isUpdating2 (useEff useRef)? ", isUpdating2.current);
+
+    if (isUpdating) {
+
+      let timer =  setInterval(() => {
+        console.log("isUpdating (setInterval useState)? ", isUpdating)
+        console.log("isUpdating2 (setInterval useRef)? ", isUpdating2.current)
+  
+        if (isUpdating2.current) {    
+          pollApi();
+        }
+      }, 2000)
+
+      return () => clearInterval(timer);
+
+    };
+    
   }, [isUpdating]);
 
   const pollApi = async () => {
+    console.log(liveTicker);
+    console.log(liveTicker2.current);
     try {
       const res = await axios.get("/live", {
         params: {
-          ticker: liveTicker,
+          ticker: liveTicker2.current,
+          // ticker: liveTicker,
         },
       });
-      console.log(res);
       if (res.status !== 200 || res.data.value === null) {
         console.log("bad response");
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -68,31 +64,31 @@ const App = () => {
 
   const toggleUpdating = () => {
     setIsUpdating(!isUpdating);
+    isUpdating2.current = !isUpdating2.current;
     if (ticker === null) {
       M.toast({ html: "Please enter a ticker before submitting" });
     }
   };
 
-  const submitTickerManual = (e) => {
+  const submitTicker = (e) => {
     e.preventDefault();
     if (ticker === null || ticker === "" || ticker === " ") {
       M.toast({ html: "No ticker entered" });
     } else {
       setLiveTicker(ticker);
-      setIsUpdating(!isUpdating);
+      liveTicker2.current = ticker;
     }
   };
 
-  const submitTickerList = (e) => {
-    e.preventDefault();
+  const tickerOnChange = (e) => {
+    // console.log(e.target.value);
     setTicker(e.target.value);
-    console.log(e.target.value);
   };
 
   return (
     <>
       <Navbar />
-      <h5 id="currentTicker">Current ticker: {liveTicker}</h5>
+      <h5 id="currentTicker">Current ticker: {liveTicker2.current}</h5>
       <p
         id="stockText"
         style={{ display: livePrice.success ? "block" : "none" }}
@@ -104,7 +100,7 @@ const App = () => {
         id="timeText"
         style={{ display: livePrice.success ? "block" : "none" }}
       >
-        Current time: {livePrice.time}
+        Last update: {livePrice.time}
       </p>
 
       <p
@@ -119,7 +115,7 @@ const App = () => {
         Warning: {livePrice.msg}
       </p>
 
-      {liveTicker && (
+      {liveTicker2 && (
         <button id="togglePrices" type="button" onClick={toggleUpdating}>
           {buttonText}
         </button>
@@ -127,7 +123,7 @@ const App = () => {
 
       <br></br>
 
-      <form onSubmit={submitTickerManual}>
+      <form onSubmit={submitTicker}>
         <label>
           <input
             id="tickerInputManual"
@@ -143,15 +139,17 @@ const App = () => {
 
       <br></br>
 
-      {/* <form onSubmit={submitTickerList}>
+      <form onSubmit={submitTicker}>
         <label>
           Select ticker
           <select
             style={{ display: "block" }}
             id="tickerInputList"
-            value={tickerInput}
+            type="text"
+            value={ticker}
             onChange={tickerOnChange}
           >
+            <option value="">Select ticker</option>
             <option value="TSLA">TSLA</option>
             <option value="AAPL">AAPL</option>
             <option value="GOOGL">GOOGL</option>
@@ -160,7 +158,7 @@ const App = () => {
         </label>
         <br></br>
         <input type="submit" value="Submit" />
-      </form> */}
+      </form>
     </>
   );
 };
