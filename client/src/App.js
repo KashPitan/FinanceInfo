@@ -68,10 +68,11 @@ const App = () => {
   };
 
   const toggleUpdating = () => {
-    setIsUpdating(!isUpdating);
-    isUpdating2.current = !isUpdating2.current;
-    if (ticker === null) {
+    if (liveTicker2.current === null | liveTicker2.current === "") {
       M.toast({ html: "Please enter a ticker before submitting" });
+    } else {
+      setIsUpdating(!isUpdating);
+      isUpdating2.current = !isUpdating2.current;
     }
   };
 
